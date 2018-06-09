@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NU Data Science Bootcamp-Web Dev 12">
+    <meta name="author" content="Francisco Galliano">
+    <title>U.S. Small Business Administration Loan Portfolio</title>
+    <!-- import plugin script -->  
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <!-- <link href="style.css" rel="stylesheet"> -->
+</head>
+<body>
+        <div class="container">
+                <div class = "row">
+                    <div class="col-md-12 jumbotron" style="text-align: center"></div>
+                        <h1><strong>Portfolio 7A Guarantee Program</strong></h1>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="well">
+                            <h5> Select Lending Bank:</h5>
+                            <select id="selDataset" onchange="optionChanged(this.value)"></select> 
+                        </div>
+                        <div class="col-md-5">
+                            <div id = "pie"></div>
+                        </div>
+                        <div class="col-md-5">
+                                <div id = "pie"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                            <div id = "bubble"></div>
+                        </div>
+            </div>
+            <script>
+            //     function updateMetaData(data){
+            // //         // note
+            //         var PANEL = document.getElementById("sample")
+            
+            // //         // note
+            //         PANEL.innerHTML = '';
+            
+            // //         // note
+            // //         // note
+            //         for(var key in data){
+            //             h6tag = document.createElement("h6");
+            //             h6Text = document.createTextNode('${key}:${data[key]}');
+            //             h6tag.append(h6Text);
+            
+            //             PANEL.appendChild(h6tag);
+            //         }
+            //     }
+                
+                // function buildCharts(sampleData, otuData){
+                //     //note
+                //     console.log('sampleData', sampleData)
+                //     var labels = sampleData[0]['otu_ids'].map(function(all_names){
+                //         return otuData[all_names]
+                //     });
+            
+                  //note=Bubble Chart
+                    // var bubbleLayout = {
+                    //     margin: {t:0},
+                    //     hovermode: "closest",
+                    //     xaxis: {title: "OTU ID"}
+                    // };
+                    // varbubbleData = [{
+                    //     x: sampleData[0]["otu_ids"],
+                    //     y: sampleData[0]["sample_values"],
+                    //     text: lables,
+                    //     mode: "markers",
+                    //     marker:{
+                    //         size: sampleData[0]["sample_values"],
+                    //         color: sampleData[0]["otu_ids"],
+                    //         colorscale: "Earth",
+                    //     }
+                    // }];
+                    // var BUBBLE = document.getElementById("bubble");
+                    // Plotly.plot(BUBBLE, bubbleData, bubbleLayout);
+            
+                //note=Pie Chart
+                    // console.log(sampleData[0]["grossApproval"].slice(0,10))
+                    // var pieData = [{
+                    //     values: sampleData[0]["grossApproval"].slice(0,10),
+                    //     labels: sampleData[0]["grossApproval"].slice(0,10),
+                    //     hovertext: labels.slice(0,10),
+                    //     hoverinfo: "hovertext",
+                    //     type: "pie"
+                    // }];
+            
+                    // var pieLayout ={
+                    //     margin: {t:0, I:0}
+                    // };
+                    // var PIE = document.getElementById("pie");
+                    // Plotly.plot(PIE, pieData, pieLayout);
+                // };
+                // function updateCharts(sampleData, otuData){
+                //     var sample_Values = sampleData[0]["ApprovalYears"];
+                //     var otuIDs = sampleData[0]["grossApproval"];
+            
+            //     //note - OTU Descriptions
+                    // var labels = otuIDs.map(function(item){
+                    //     return otuData[item]
+                    // });
+            
+            // //     //note - Update Bubble Chart
+            //         var BUBBLE = document.getElementById("bubble");
+            //         Plotly.restyle(BUBBLE, "x", [otuIDs]);
+            //         Plotly.restyle(BUBBLE, "y", [sample_Values]);
+            //         Plotly.restyle(BUBBLE, "text", [labels]);
+            //         Plotly.restyle(BUBBLE, "marker.size", [sample_Values]);
+            //         Plotly.restyle(BUBBLE, "marker.color", [otuIDs]);
+                
+            //     //note - Update Pie Chart
+                    // var PIE = document.getElementById("pie");
+                    // var pieUpdate = {
+                    //     values: [sample_Values.slice(0,10)],
+                    //     labels: [otuIDs.slice(0,10)],
+                    //     hovertext: [labels.slice(0,10)],
+                    //     hoverinfo: "hovertext",
+                    //     type: "pie"
+                    // };
+                    // Plotly.restyle(PIE, pieUpdate);
+                // }
+            
+            //     function getData(sample, callback){
+            //         Plotly.d3.json(`/banks`, function(error, sampleData) {
+            //             if(error) return console.warn(error);
+            //             console.log('sampledata', sampleData)
+            //             Plotly.d3.json('/fundings', function(error, otuData){
+            //                 if(error) return console.warn(error);
+            //                 callback(sampleData, otuData);  
+            //             });
+            //         });
+            
+            //     Plotly.d3.json(`/metadata/${sample}`, function(error, metaData){
+            //             if(error) return console.warn(error);
+            
+            //             updateMetaData(metaData);
+            //     })
+            // }
+            
+            function getOptions(){
+                var selector = document.getElementById("selDataset");
+                Plotly.d3.json("/banks", function(error, sampleNames){
+                    if(error)throw error;
+                    for (var i=0; i < sampleNames.length; i++){
+                        var currentOption = document.createElement('option');
+                        currentOption.text = sampleNames[i].BankName;
+                        currentOption.value = sampleNames[i].BankName;
+                        selector.appendChild(currentOption);
+                        console.log(sampleNames[i])
+                    }
+            
+                    getData(sampleNames[0], buildCharts);
+                })
+            }
+            // function optionChanged(newSample){
+            //     getData(newSample, updateCharts);
+            // }
+            function init(){
+                getOptions();
+                
+            }
+            
+            init()
+            </script>    
+                    
+                
+                
+                
+                
+                <!-- <script src="belly.js"></script> -->
+                <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+                <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> -->
+                <!-- <select id="selDataset" type="dropdown-toggle" class="form-control" name="otu_id" onchange="optionChange(this.value)"> -->
+                    
+            </body>
+            </html>

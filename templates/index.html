@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NU Data Science Bootcamp-Web Dev 12">
+    <meta name="author" content="Francisco Galliano">
+    <title>Project 2 Javashit</title>
+    <!-- import plugin script -->  
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class = "row">
+            <div class="col-md-12 jumbotron" style="text-align: center">
+                <h1><strong>Portfolio Monitor for SBA Loan Guarantees</strong></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="well">
+                    <h5> Lending Banks:</h5>
+                    <select id="selDataset" onchange="optionChanged(this.value)"></select> 
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div id= "pie"></div>
+        </div>
+        <script>
+                function updateMetaData(data) {
+
+            // Reference to Panel element for sample metadata
+            var PANEL = document.getElementById("sample-metadata");
+
+            // Clear any existing metadata
+            PANEL.innerHTML = '';
+
+            // Loop through all of the keys in the json response and
+            // create new metadata tags
+            for(var key in data) {
+                h6tag = document.createElement("h6");
+                h6Text = document.createTextNode(`${key}: ${data[key]}`);
+                h6tag.append(h6Text);
+
+                PANEL.appendChild(h6tag);
+            }
+        }
+
+        function buildCharts(sampleData, otuData) {
+
+            // Loop through sample data and find the OTU Taxonomic Name
+            var labels = sampleData[0]['otu_ids'].map(function(item) {
+                return otuData[item]
+            });
+        }
+        
+        
+        
+        
+        
+                function getOptions(){
+                    var selector = document.getElementById("selDataset");
+                    Plotly.d3.json("/banks", function(error, sampleNames){
+                        if(error)throw error;
+                        for (var i=0; i < sampleNames.length; i++){
+                            var currentOption = document.createElement('option');
+                            currentOption.text = sampleNames[i].BankName;
+                            currentOption.value = sampleNames[i].BankName;
+                            selector.appendChild(currentOption);
+                            console.log(sampleNames[i])
+                        }
+                
+                        getData(sampleNames[0], buildCharts);
+                    })
+                }
+                // function optionChanged(newSample){
+                //     getData(newSample, updateCharts);
+                // }
+                function init(){
+                    getOptions();
+                    
+                }
+                
+                init()        
+                
+        </script>
+    
+    
+    
+    
+    </div>
+
+</body>
+</html>
